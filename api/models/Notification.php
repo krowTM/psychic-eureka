@@ -4,19 +4,18 @@ namespace api\models;
 
 use Yii;
 use yii\base\Model;
+use light\yii2\XmlParser;
 
 class Notification extends Model
 {
-    public $name;
+    public $rawBody;
     public $body;
 
-    public function sendEmail($email)
+    public function getParsedXML()
     {
-        return Yii::$app->mailer->compose()
-            ->setTo($email)
-            ->setFrom([$this->email => $this->name])
-            ->setSubject($this->subject)
-            ->setTextBody($this->body)
-            ->send();
+    	$xmlParser = new XmlParser();
+    	$this->body = $xmlParser->parse($this->rawBody, null);
+    	
+    	return $this->body;
     }
 }
